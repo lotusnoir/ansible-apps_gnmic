@@ -1,0 +1,193 @@
+username: ing.sros.nokia
+password: AKFWaflpf7dQFw
+port: 57400
+insecure: true
+log-file: /var/log/gnmic.log
+
+subscriptions:
+  state_port_octets:
+    paths:
+      - "/state/port[port-id=*]/statistics/out-octets"
+      - "/state/port[port-id=*]/statistics/in-octets"
+    stream-mode: sample
+    sample-interval: 60s
+    qos: 0
+  state_port_octets_1s:
+    paths:
+      - "/state/port[port-id=*]/statistics/out-octets"
+      - "/state/port[port-id=*]/statistics/in-octets"
+    stream-mode: sample
+    sample-interval: 1s
+    qos: 0    
+  state_port_state:                                                                      
+    paths:                                                                               
+      - "/state/port[port-id=*]/port-state"                                              
+    stream-mode: sample                                                                  
+    sample-interval: 60s                                                                 
+    qos: 0
+  ppp_sessions:
+    paths:
+      - "state/subscriber-mgmt/statistics/sessions[counter=ppp-sessions-lac-pppoe]/current-value"
+      - "state/subscriber-mgmt/statistics/total-hosts[counter=internal]/current-value"
+    stream-mode: sample
+    sample-interval: 60s
+    qos: 0
+  l2tp_tunnels:
+    paths:
+      - "state/subscriber-mgmt/statistics/l2tp[counter=l2tp-tunnels-receiver]"
+      - "state/subscriber-mgmt/statistics/l2tp[counter=l2tp-tunnels-originator]"
+    stream-mode: sample
+    sample-interval: 60s
+    qos: 0    
+
+processors:
+  processor_port_state:
+    event-strings:
+      debug : false
+      value-names:
+        - "port-state"
+      transforms:
+        - replace:
+            apply-on: "value"
+            old: "up"
+            new: "0"
+        - replace:
+            apply-on: "value"
+            old: "link-down"
+            new: "2"
+
+outputs:
+  prom_output:
+    type: prometheus
+    listen: :9150
+    path: /metrics
+    expiration: 90s
+    debug: false
+    event-processors:
+      - processor_port_state
+
+targets:
+  10.25.1.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.0.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.1.2:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.1.3:
+    subscriptions:
+      - state_port_octets_1s
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.1.21:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+    outputs:
+      - prom_output
+  10.25.1.28:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+    outputs:
+      - prom_output      
+  10.25.2.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.3.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.3.2:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.4.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.5.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.6.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.6.2:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.7.1:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.7.2:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output
+  10.25.2.2:
+    subscriptions:
+      - state_port_octets
+      - state_port_state
+      - ppp_sessions
+      - l2tp_tunnels
+    outputs:
+      - prom_output

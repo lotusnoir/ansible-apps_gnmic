@@ -1,0 +1,12 @@
+---
+# Binary install
+gnmic_version: "0.13.0"
+gnmic_tgz: "gnmic_{{ gnmic_version }}_Linux_x86_64.tar.gz"
+gnmic_tgz_url: "https://github.com/karimra/gnmic/releases/download/v{{ gnmic_version }}/{{ gnmic_tgz }}"
+gnmic_temp_dir: "/tmp"
+gnmic_install_dir: "/usr/local/bin"
+gnmic_config_dir: "/etc/gnmic"
+gnmic_force_install: false
+
+# Systemd options
+gnmic_port: "9150"

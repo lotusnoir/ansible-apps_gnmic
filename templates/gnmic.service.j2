@@ -1,0 +1,19 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=gnmic monitoring tool
+After=network-online.target
+StartLimitInterval=0
+
+[Service]
+Type=simple
+Restart=always
+ExecStart={{ gnmic_install_dir }}/gnmic \
+          subscribe --config {{ gnmic_config_dir }}/gnmic-sr2e.yml
+ExecReload=/bin/kill -HUP $MAINPID
+SyslogIdentifier=gnmic
+RestartSec=1
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

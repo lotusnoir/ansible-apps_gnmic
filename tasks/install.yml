@@ -1,0 +1,77 @@
+---
+- name: "Check for gnmic binary"
+  stat:
+    path: '{{ gnmic_install_dir }}/gnmic'
+  changed_when: false
+  register: gnmic_binary
+
+- name: Check version for gnmic
+  command: /usr/local/bin/gnmic version | grep version | awk '{print $NF}'
+  changed_when: false
+  register: gnmic_binary_version
+  when: gnmic_binary.stat.exists
+
+- when: (not gnmic_binary.stat.exists) or (gnmic_binary_version is defined and gnmic_version not in gnmic_binary_version.stdout or gnmic_version == "")
+  block:
+    - name: "Install requierements"
+      package:
+        name: "ca-certificates"
+        state: present
+
+    - name: "Download gnmic..."
+      get_url:
+        url: '{{ gnmic_tgz_url }}'
+        dest: '{{ gnmic_temp_dir }}/{{ gnmic_tgz }}'
+        timeout: '60'
+        mode: '0644'
+
+    - name: "Ensure install dir exists"
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - '{{ gnmic_install_dir }}'
+        - '{{ gnmic_temp_dir }}/gnmic'
+        - '{{ gnmic_config_dir }}'
+
+    - name: "Unarchive gnmic..."
+      unarchive:
+        src: '{{ gnmic_temp_dir }}/{{ gnmic_tgz }}'
+        dest: '{{ gnmic_temp_dir }}/gnmic'
+        remote_src: true
+        mode: '0644'
+
+    - name: "Copy gnmic binary..."
+      copy:
+        src: '{{ gnmic_temp_dir }}/gnmic/gnmic'
+        dest: '{{ gnmic_install_dir }}/gnmic'
+        remote_src: true
+        mode: '0755'
+
+    - name: "Remove temporary directory"
+      file:
+        path: '{{ gnmic_temp_dir }}/gnmic'
+        state: absent
+
+- name: "Create config file for gnmic"
+  template:
+    src: 'gnmic-sr2e.yml.j2'
+    dest: '{{ gnmic_config_dir }}/gnmic-sr2e.yml'
+    mode: '0640'
+  notify: "restart gnmic"
+
+
+- name: "Create systemd for gnmic"
+  template:
+    src: 'gnmic.service.j2'
+    dest: '/etc/systemd/system/gnmic.service'
+    mode: '0640'
+  notify: "restart gnmic"
+
+- name: Start gnmic.service
+  service:
+    name: gnmic
+    state: started
+    enabled: true
+    daemon_reload: true
