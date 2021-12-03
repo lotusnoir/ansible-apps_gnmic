@@ -1,25 +1,36 @@
 ---
 galaxy_info:
-  author: "Philippe leal"
-  description: "Install and configure gnmic monitoring tool for prometheus"
+  author: lotusnoir
   role_name: apps_gnmic
-  license: "license: Apache License, Version 2.0"
+  description: "Deploy [gnmic](https://github.com/karimra/gnmic) a gnmi CLI client and collector."
+  license: "Apache License, Version 2.0"
   min_ansible_version: 2.8
 
   platforms:
     - name: "Ubuntu"
       versions:
+        - "focal"
         - "bionic"
-        - "xenial"
     - name: "Debian"
       versions:
+        - "bullseye"
         - "buster"
-        - "stretch"
+    - name: "RedHat"
+      versions:
+        - "Maipo"
+    - name: "CentOS"
+      versions:
+        - "8"
+        - "7"
+    - name: "Rocky"
+      versions:
+        - "8"
 
   galaxy_tags:
     - gnmic
-    - monitoring
-    - network
+    - collector
+    - cli
     - prometheus
+    - monitoring
 
 dependencies: []
