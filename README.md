@@ -4,9 +4,9 @@
 
 [![Galaxy Role](https://img.shields.io/badge/galaxy-apps_gnmic-purple?style=flat)](https://galaxy.ansible.com/lotusnoir/apps_gnmic)
 [![Version](https://img.shields.io/github/release/lotusnoir/ansible-apps_gnmic.svg)](https://github.com/lotusnoir/ansible-apps_gnmic/releases/latest)
-![GitHub repo size](https://img.shields.io/github/repo-size/lotusnoir/ansible-apps_gnmic?color=orange&style=flat)
+[![GitHub repo size](https://img.shields.io/github/repo-size/lotusnoir/ansible-apps_gnmic?color=orange&style=flat)](https://galaxy.ansible.com/lotusnoir/apps_gnmic)
 [![downloads](https://img.shields.io/ansible/role/d/56081)](https://galaxy.ansible.com/lotusnoir/apps_gnmic)
-![Ansible Quality Score](https://img.shields.io/ansible/quality/56081)
+[![Ansible Quality Score](https://img.shields.io/ansible/quality/56081)](https://galaxy.ansible.com/lotusnoir/apps_gnmic)
 [![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 Deploy [gnmic](https://github.com/karimra/gnmic) a gnmi CLI client and collector.

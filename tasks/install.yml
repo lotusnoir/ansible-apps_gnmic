@@ -1,32 +1,33 @@
 ---
 - name: "Check for gnmic binary"
-  stat:
+  ansible.builtin.stat:
     path: '{{ gnmic_install_dir }}/gnmic'
   changed_when: false
   register: gnmic_binary
 
 - name: Check version for gnmic
-  command: /usr/local/bin/gnmic version | grep version | awk '{print $NF}'
+  ansible.builtin.command: /usr/local/bin/gnmic version | grep version | awk '{print $NF}'
   changed_when: false
   register: gnmic_binary_version
   when: gnmic_binary.stat.exists
 
-- when: (not gnmic_binary.stat.exists) or (gnmic_binary_version is defined and gnmic_version not in gnmic_binary_version.stdout or gnmic_version == "")
+- name: "Install tasks"
+  when: (not gnmic_binary.stat.exists) or (gnmic_binary_version is defined and gnmic_version not in gnmic_binary_version.stdout or gnmic_version == "")
   block:
     - name: "Install requierements"
-      package:
-        name: "ca-certificates"
+      ansible.builtin.package:
+        name: ["ca-certificates", "unzip", "tar"]
         state: present
 
     - name: "Download gnmic..."
-      get_url:
+      ansible.builtin.get_url:
         url: '{{ gnmic_tgz_url }}'
         dest: '{{ gnmic_temp_dir }}/{{ gnmic_tgz }}'
         timeout: '60'
         mode: '0644'
 
     - name: "Ensure install dir exists"
-      file:
+      ansible.builtin.file:
         path: '{{ item }}'
         state: directory
         mode: '0755'
@@ -36,41 +37,40 @@
         - '{{ gnmic_config_dir }}'
 
     - name: "Unarchive gnmic..."
-      unarchive:
+      ansible.builtin.unarchive:
         src: '{{ gnmic_temp_dir }}/{{ gnmic_tgz }}'
         dest: '{{ gnmic_temp_dir }}/gnmic'
         remote_src: true
         mode: '0644'
 
     - name: "Copy gnmic binary..."
-      copy:
+      ansible.builtin.copy:
         src: '{{ gnmic_temp_dir }}/gnmic/gnmic'
         dest: '{{ gnmic_install_dir }}/gnmic'
         remote_src: true
         mode: '0755'
 
     - name: "Remove temporary directory"
-      file:
+      ansible.builtin.file:
         path: '{{ gnmic_temp_dir }}/gnmic'
         state: absent
 
 - name: "Create config file for gnmic"
-  template:
+  ansible.builtin.template:
     src: 'gnmic-sr2e.yml.j2'
     dest: '{{ gnmic_config_dir }}/gnmic-sr2e.yml'
     mode: '0640'
   notify: "restart gnmic"
 
-
 - name: "Create systemd for gnmic"
-  template:
+  ansible.builtin.template:
     src: 'gnmic.service.j2'
     dest: '/etc/systemd/system/gnmic.service'
     mode: '0640'
   notify: "restart gnmic"
 
-- name: Start gnmic.service
-  service:
+- name: "Start gnmic.service"
+  ansible.builtin.service:
     name: gnmic
     state: started
     enabled: true
