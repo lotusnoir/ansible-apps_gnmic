@@ -6,7 +6,7 @@ gnmic_tgz_url: "https://github.com/karimra/gnmic/releases/download/v{{ gnmic_ver
 gnmic_temp_dir: "/tmp"
 gnmic_install_dir: "/usr/local/bin"
 gnmic_config_dir: "/etc/gnmic"
-gnmic_force_install: false
+#gnmic_force_install: false
 
 # Systemd options
-gnmic_port: "9150"
+#gnmic_port: "9150"
